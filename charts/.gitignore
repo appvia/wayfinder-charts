@@ -1,0 +1,4 @@
+# General
+*.tgz
+index.yaml
+index.yaml.backup

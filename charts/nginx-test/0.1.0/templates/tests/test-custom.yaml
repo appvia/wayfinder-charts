@@ -1,0 +1,16 @@
+{{- if .Values.tests.custom.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "test.fullname" . }}-test-{{ .Values.tests.custom.name }}"
+  labels:
+    {{- include "test.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: {{ .Values.tests.custom.name }}
+      image: busybox
+      command: ['{{ .Values.tests.custom.command }}']
+  restartPolicy: Never
+{{- end }}
