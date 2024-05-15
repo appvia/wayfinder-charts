@@ -42,4 +42,4 @@ for chart_dir in "${CHARTS_DIR}"/*; do
 
 done
 
-helm repo index . --url "https://appvia.github.io/wayfinder-charts" --merge index.yaml
+helm repo index . --url "https://charts.wayfinder.run" --merge index.yaml
