@@ -11,13 +11,17 @@ permissions:
 jobs:
   update-charts:
     runs-on: [ubuntu-latest]
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v5
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Checkout main
-        run:  git checkout main
+        with:
+          go-version-file: 'go.mod'
+      - name: Check out main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Check helm chart
         run: make update-charts
       - name: Check if charts got changed
