@@ -14,17 +14,17 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: 'go.mod'
       - name: Check out main branch
         uses: actions/checkout@v4
         with:
           ref: main
-      - name: Check helm chart
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: Check for chart updates
         run: make update-charts
-      - name: Check if charts got changed
+      - name: Create PR if chart updates found
         run: |
           if [ $(git status --porcelain | wc -l) -gt 0 ]; then
             echo "Chart updates available, creating pull request"
