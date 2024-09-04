@@ -19,7 +19,7 @@ ingress-nginx:
   source: https://kubernetes.github.io/ingress-nginx/index.yaml
   external: true
 kyverno:
-  version: 3.2.6
+  version: 2.7.3
   source: https://kyverno.github.io/kyverno/index.yaml
   external: true
 metrics-server:
