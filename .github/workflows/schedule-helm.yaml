@@ -1,0 +1,44 @@
+name: Chart updates
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '37 13 * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-charts:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v5
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Checkout main
+        run:  git checkout main
+      - name: Check helm chart
+        run: make update-charts
+      - name: Check if charts got changed
+        run: |
+          if [ $(git status --porcelain | wc -l) -gt 0 ]; then
+            echo "Chart updates available, creating pull request"
+            echo "Delete old branch automation/update-charts"
+            git branch -d automation/update-charts &>/dev/null || true
+            echo "Create new branch automation/update-charts"
+            git checkout -b automation/update-charts
+            echo "Generate new assets"
+            make generate-assets
+            echo "Update charts"
+            git add *
+            git config advice.addIgnoredFile false
+            git config --global user.email "wf-chart-updater@appvia.io"
+            git config --global user.name "Wayfinder charts auto-updater"
+            echo "Commit changes"
+            git commit -m "Update charts"
+            echo "Push changes"
+            git push -u origin HEAD --force
+            echo "Create pull request"
+            gh pr create --fill --title "Chart update" --body "Chart updates found, please review and merge"
+          fi
