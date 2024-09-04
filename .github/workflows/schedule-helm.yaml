@@ -28,8 +28,6 @@ jobs:
             git branch -d automation/update-charts &>/dev/null || true
             echo "Create new branch automation/update-charts"
             git checkout -b automation/update-charts
-            echo "Generate new assets"
-            make generate-assets
             echo "Update charts"
             git add *
             git config advice.addIgnoredFile false
