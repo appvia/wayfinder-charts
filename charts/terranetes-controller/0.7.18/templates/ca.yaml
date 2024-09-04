@@ -1,0 +1,25 @@
+{{- if .Values.controller.webhooks.ca }}
+{{- $secret := lookup "v1" "Secret" .Release.Namespace .Values.controller.webhooks.caSecret }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.controller.webhooks.caSecret }}
+  labels:
+    {{- include "terranetes-controller.labels" . | nindent 4 }}
+type: Opaque
+data:
+{{- if $secret }}
+  ca.pem: {{ index $secret.data "ca.pem" }}
+  tls.pem: {{ index $secret.data "tls.pem" }}
+  tls-key.pem: {{ index $secret.data "tls-key.pem" }}
+{{- else }}
+{{ $ca := genCA "terranetes-controller" 7300 }}
+{{ $dn := printf "controller.%s.svc.cluster.local" .Release.Namespace }}
+{{ $sn := printf "controller.%s.svc" .Release.Namespace }}
+{{ $server := genSignedCert "" (list "127.0.0.1") (list "localhost" "controller" $sn $dn) 3650 $ca }}
+  ca.pem: {{ $ca.Cert | b64enc }}
+  tls.pem: {{ $server.Cert | b64enc }}
+  tls-key.pem: {{ $server.Key | b64enc }}
+{{- end }}
+{{- end }}
