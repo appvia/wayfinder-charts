@@ -20,4 +20,6 @@ type ChartConfig struct {
 	Source   string `json:"source,omitempty" yaml:"source,omitempty"`
 	External bool   `json:"external,omitempty" yaml:"external,omitempty"`
 	Values   []byte `json:"values,omitempty" yaml:"values,omitempty"`
+	// Pin indicates that we should not automatically update this dependency, manual updates only.
+	Pin bool `json:"pin,omitempty" yaml:"pin,omitempty"`
 }
