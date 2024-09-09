@@ -46,7 +46,7 @@ func UpdateCharts(ctx context.Context, only string) error {
 		if only != "" && name != only { // skip others if running for one chart
 			continue
 		}
-		if !chart.External { // skip non external charts
+		if !chart.External || chart.Pin { // skip non external and pinned charts
 			continue
 		}
 		fmt.Println("Checking chart:", name)

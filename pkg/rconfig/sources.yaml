@@ -22,6 +22,8 @@ kyverno:
   version: 2.7.3
   source: https://kyverno.github.io/kyverno/index.yaml
   external: true
+  # Kyverno is pinned to 2.7.x as WF does not support the application of v3.x policies yet
+  pin: true
 metrics-server:
   version: 3.12.1
   source: https://kubernetes-sigs.github.io/metrics-server/index.yaml
