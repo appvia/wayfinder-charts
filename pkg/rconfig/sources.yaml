@@ -11,7 +11,7 @@ cluster-autoscaler:
   source: https://kubernetes.github.io/autoscaler/index.yaml
   external: true
 external-dns:
-  version: 8.3.5
+  version: 8.3.7
   source: https://charts.bitnami.com/bitnami/index.yaml
   external: true
 ingress-nginx:
@@ -22,18 +22,17 @@ kyverno:
   version: 2.7.3
   source: https://kyverno.github.io/kyverno/index.yaml
   external: true
-  # Kyverno is pinned to 2.7.x as WF does not support the application of v3.x policies yet
   pin: true
 metrics-server:
   version: 3.12.1
   source: https://kubernetes-sigs.github.io/metrics-server/index.yaml
   external: true
 snapshot-controller:
-  version: 3.0.5
+  version: 3.0.6
   source: https://piraeus.io/helm-charts/index.yaml
   external: true
 terranetes-controller:
-  version: 0.7.18
+  version: 0.7.19
   source: https://terranetes-controller.appvia.io/index.yaml
   external: true
 tigera-operator:
