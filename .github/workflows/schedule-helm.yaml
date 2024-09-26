@@ -41,6 +41,6 @@ jobs:
             git commit -m "Update charts"
             echo "Push changes"
             git push -u origin HEAD --force
-            echo "Create pull request"
-            gh pr create --fill --title "Chart update" --body "Chart updates found, please review and merge"
+            echo "Create pull request (ignoring failures as this will fail if it already exists)"
+            gh pr create --fill --title "Chart update" --body "Chart updates found, please review and merge" || true
           fi
