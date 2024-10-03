@@ -7,11 +7,11 @@ cert-manager:
   source: https://charts.jetstack.io/index.yaml
   external: true
 cluster-autoscaler:
-  version: 9.37.0
+  version: 9.43.0
   source: https://kubernetes.github.io/autoscaler/index.yaml
   external: true
 external-dns:
-  version: 8.3.8
+  version: 8.3.9
   source: https://charts.bitnami.com/bitnami/index.yaml
   external: true
 ingress-nginx:
