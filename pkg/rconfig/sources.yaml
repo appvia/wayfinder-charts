@@ -7,7 +7,7 @@ cert-manager:
   source: https://charts.jetstack.io/index.yaml
   external: true
 cluster-autoscaler:
-  version: 9.43.0
+  version: 9.43.1
   source: https://kubernetes.github.io/autoscaler/index.yaml
   external: true
 external-dns:
