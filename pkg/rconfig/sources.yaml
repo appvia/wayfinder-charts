@@ -7,7 +7,7 @@ cert-manager:
   source: https://charts.jetstack.io/index.yaml
   external: true
 cluster-autoscaler:
-  version: 9.43.0
+  version: 9.43.1
   source: https://kubernetes.github.io/autoscaler/index.yaml
   external: true
 external-dns:
@@ -32,7 +32,7 @@ snapshot-controller:
   source: https://piraeus.io/helm-charts/index.yaml
   external: true
 terranetes-controller:
-  version: 0.7.21
+  version: 0.7.22
   source: https://terranetes-controller.appvia.io/index.yaml
   external: true
 tigera-operator:
