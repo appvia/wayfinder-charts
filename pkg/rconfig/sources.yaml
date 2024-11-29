@@ -1,5 +1,5 @@
 aws-ebs-csi-driver:
-  version: 2.36.0
+  version: 2.37.0
   source: https://kubernetes-sigs.github.io/aws-ebs-csi-driver/index.yaml
   external: true
 cert-manager:
@@ -7,11 +7,11 @@ cert-manager:
   source: https://charts.jetstack.io/index.yaml
   external: true
 cluster-autoscaler:
-  version: 9.43.0
+  version: 9.43.2
   source: https://kubernetes.github.io/autoscaler/index.yaml
   external: true
 external-dns:
-  version: 8.3.9
+  version: 8.5.1
   source: https://charts.bitnami.com/bitnami/index.yaml
   external: true
 ingress-nginx:
@@ -32,10 +32,10 @@ snapshot-controller:
   source: https://piraeus.io/helm-charts/index.yaml
   external: true
 terranetes-controller:
-  version: 0.7.21
+  version: 0.7.23
   source: https://terranetes-controller.appvia.io/index.yaml
   external: true
 tigera-operator:
-  version: 3.28.2
+  version: 3.29.0
   source: https://projectcalico.docs.tigera.io/charts/index.yaml
   external: true
