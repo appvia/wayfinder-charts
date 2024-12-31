@@ -19,7 +19,6 @@ package updatecharts
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -31,6 +30,7 @@ import (
 	"github.com/appvia/wayfinder-charts/pkg/rconfig"
 	"github.com/appvia/wayfinder-charts/pkg/utils/compression"
 	httputils "github.com/appvia/wayfinder-charts/pkg/utils/http"
+	"github.com/appvia/wayfinder-charts/pkg/utils/oci"
 )
 
 // Flow:
@@ -153,12 +153,22 @@ func updateLocalChart(ctx context.Context, name, url string, entries []Entry, v 
 			continue
 		}
 		if v.Equal(ev) {
-			// download and extract
 			if len(entry.Urls) == 0 {
 				return fmt.Errorf("no urls found for %s", entry.Version)
 			}
 			chartSourceUrl := entry.Urls[0]
 
+			outputPath := fmt.Sprintf("./charts/%s/%s", name, ev.String())
+			if err := os.MkdirAll(outputPath, 0755); err != nil {
+				return fmt.Errorf("failed to create output directory: %w", err)
+			}
+
+			// Handle OCI registry URLs
+			if strings.HasPrefix(chartSourceUrl, "oci://") {
+				return handleOCIChart(ctx, chartSourceUrl, name, ev.String(), outputPath)
+			}
+
+			// Handle HTTP(S) charts
 			valid := isUrl(chartSourceUrl)
 			if !valid {
 				// some helm charts have urls that is local. We need to prefix it with original source url
@@ -166,51 +176,33 @@ func updateLocalChart(ctx context.Context, name, url string, entries []Entry, v 
 				chartSourceUrl = fmt.Sprintf("%s/%s", base, chartSourceUrl)
 			}
 
-			resp, err := httputils.Get(ctx, chartSourceUrl)
-			if err != nil {
-				return err
-			}
-			defer resp.Body.Close()
-
-			if resp.StatusCode != http.StatusOK {
-				return fmt.Errorf("bad status: %s", resp.Status)
-			}
-
-			chartTemp, err := os.CreateTemp("/tmp", "chart-")
-			if err != nil {
-				return err
-			}
-			defer os.Remove(chartTemp.Name())
-
-			_, err = io.Copy(chartTemp, resp.Body)
-			if err != nil {
-				return err
-			}
-			err = resp.Body.Close()
-			if err != nil {
-				return err
-			}
-			err = chartTemp.Close()
-			if err != nil {
-				return err
-			}
-
-			f, err := os.Open(chartTemp.Name())
-			if err != nil {
-				return err
-			}
-			defer f.Close()
-
-			output := fmt.Sprintf("./charts/%s/%s", name, ev.String())
-			err = compression.ExtractTarGz(f, name, output)
-			if err != nil {
-				return err
-			}
-
+			return handleHTTPChart(ctx, chartSourceUrl, name, ev.String(), outputPath)
 		}
 	}
-
 	return nil
+}
+
+func handleOCIChart(ctx context.Context, chartUrl, name, version string, outputPath string) error {
+	reader, err := oci.Get(ctx, chartUrl)
+	if err != nil {
+		return fmt.Errorf("error downloading chart: %w", err)
+	}
+
+	return compression.ExtractTarGz(reader, name, outputPath)
+}
+
+func handleHTTPChart(ctx context.Context, chartUrl, name, version string, outputPath string) error {
+	resp, err := httputils.Get(ctx, chartUrl)
+	if err != nil {
+		return fmt.Errorf("error downloading chart: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("bad status: %s", resp.Status)
+	}
+
+	return compression.ExtractTarGz(resp.Body, name, outputPath)
 }
 
 func isUrl(str string) bool {
